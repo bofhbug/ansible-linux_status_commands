@@ -1,0 +1,66 @@
+---
+
+# copy more complex scripting to the target server and add the script to
+# the linux_status_commands list
+linux_status_copy_scripts: []
+
+linux_status_commands:
+  - name: uptime_since
+    command: uptime -s
+  - name: hostname
+    command: hostname
+  - name: system_processes
+    command: ps  -feH
+  - name: system_last
+    command: last -F -x
+  - name: linux_dist_release
+    command: cat /etc/*release
+  - name: linux_kernel
+    command: uname -a
+  # get package details
+  - name: apt_get_simulate_dist_upgrade
+    command: apt-get dist-upgrade --simulate
+  - name: apt_history_log
+    command: tail -500 /var/log/apt/history.log
+  - name: apt_keys_installed
+    command: apt-key list
+  - name: apt_list_installed
+    command: apt list --installed
+  - name: apt_list_upgradable
+    command: apt list --upgradable
+  - name: apt_sources
+    command: apt-cache policy
+  - name: apt_update_notifier_packages_available
+    command: grep -v '^$' /var/lib/update-notifier/updates-available
+  - name: apt_update_notifier_reboot_required
+    command: cat /var/run/reboot-required
+  - name: dpkg_list
+    command: dpkg -l
+  - name: dpkg_history_log
+    command: tail -500 /var/log/dpkg.log
+  # get shell users details
+  - name: shell_users
+    command: awk -F'[/:]' '{if ($3 >= 1000 && $3 != 65534) print $1}' /etc/passwd
+  - name: shell_users_history
+    command: for i in $(find /home /root -name '*history' -type f); do echo "$i $(sudo tail -500 $i)"; done
+
+  # get system and security configuration
+  - name: app_armor_package
+    command: apt policy apparmor
+  - name: app_armor_status
+    command: aa-status
+  - name: ufw_status
+    command: ufw status verbose
+  - name: sysctl_dump
+    command: sysctl -a
+
+  # get system logs
+  - name: logs_syslog
+    command: tail -500 /var/log/syslog
+  - name: logs_kern
+    command: tail -500 /var/log/kern.log
+  - name: logs_cloud_init
+    command: tail -500 /var/log/cloud-init.log
+  - name: logs_cloud_init_stdout
+    command: tail -500 /var/log/cloud-init-output.log
+
