@@ -3,7 +3,7 @@ language: python
 python: "2.7"
 
 # Use the new container infrastructure
-sudo: false
+##sudo: false #root: deprecated key sudo (The key `sudo` has no effect anymore.)
 
 # Install ansible
 addons:
