@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: linux_status_commands
   author: your name
   description: your role description
   company: your company (optional)
