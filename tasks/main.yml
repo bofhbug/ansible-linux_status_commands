@@ -1,2 +1,25 @@
 ---
 # tasks file for linux-status-commands
+- name: run command
+  shell: "{{ item.command }}"
+  with_items: "{{ linux_status_commands }}"
+  register: commands
+  changed_when: false
+  ignore_errors: yes
+
+- debug:
+    msg: "{{ item.stdout_lines }}"
+  with_items: "{{ commands.results }}"
+
+- name: setup facts
+  set_fact:
+    report: "{{ report|default([]) + [ { 'name': item.item.name, 'command': item.item.command, 'result': item.stdout_lines} ] }}"
+  with_items: "{{ commands.results }}"
+  no_log: True
+
+- name: copy output to file
+  copy:
+    content: "{{ report | to_nice_json}}"
+    dest: "{{ linux_status_fileout }}"
+  delegate_to: localhost
+  become: no
